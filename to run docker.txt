@@ -1,0 +1,12 @@
+run server
+------------
+sudo docker build -t stun-server .
+sudo docker run --network=host -p 8000:8000 stun-server
+
+
+run peers
+----------
+sudo docker build -t peer .
+sudo docker run --network=host -it -v .:/home  peer
+
+

@@ -4,19 +4,19 @@ import threading
 import random
 import os
 from PIL import Image
-import math
-
-import socket
-import math
 from tqdm import tqdm
+import math
 
 
 
 
-globalPort = 9096
-INCHAT = False
+
 def connect_user():
-    choice = input("(1) Do you want to get online and wait for Image files?\n(2) Send Images?\n(3) get online and wait for text? \n(4) send text message?\n")
+    choice = input("\
+        (1) Do you want to get online and wait for Image files?\n\
+        (2) Send Images?\n\
+        (3) get online and wait for text? \n\
+        (4) send text message?\n")
     #recieving files
     if choice == "1":
         Listen_for_files()
@@ -163,7 +163,8 @@ def SendImage():
     ip, port = request_special_peer_in_app(name)
     IP_PORT =(ip, port)
     globalPort = port
-    receiver_ip = "127.0.0.1"  # IP address of the receiver
+    
+    receiver_ip =  ip # IP address of the receiver
     receiver_port = globalPort  # Port number of the receiver
     sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -172,6 +173,7 @@ def SendImage():
 
     # Define the IP address and port to bind the sender
 
+    sender_socket.close()
 
     # Create a socket object
     sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -186,7 +188,7 @@ def SendImage():
     num_packets = math.ceil(image_size / packet_size)
 
     # Send the number of packets to the receiver
-    receiver_address = ('127.0.0.1', receiver_port)  # Replace with receiver's IP address and port
+    receiver_address = (ip, receiver_port)  # Replace with receiver's IP address and port
     sender_socket.sendto(str(num_packets).encode(), receiver_address)
 
     # Wait for the acceptance response from the receiver
@@ -227,12 +229,11 @@ def Listen_for_files():
         globalPort = port
         print("Waiting for connection...")
 
-        your_ip = "127.0.0.1"  # IP address of the receiver
+        your_ip = Ip  # IP address of the receiver
         your_port = globalPort  # Port number to listen on
         receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         receiver_socket.bind((your_ip, your_port))
 
-        image_path = "rec.jpg"  # Replace with the desired path to save the received image
 
         # Receive the number of packets from the sender
         num_packets_data, sender_address = receiver_socket.recvfrom(1024)
@@ -253,12 +254,8 @@ def Listen_for_files():
             for i in range(num_packets):
                 packet_data, sender_address = receiver_socket.recvfrom(1024)
                 image_data += packet_data
-
-            # Write the received image data to a file
-            with open('received_image.jpg', 'wb') as file:
+            with open('/home/received_image.jpg', 'wb') as file:
                 file.write(image_data)
-
-        # Close the socket
         receiver_socket.close()
 
     
